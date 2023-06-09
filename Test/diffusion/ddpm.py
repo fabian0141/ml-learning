@@ -103,10 +103,10 @@ def launch():
     import torchvision.datasets as dset
     import torchvision.transforms as transforms
 
-    dataroot = "C:/Users/Fabian/Documents/AI_Development/DataSets/MegaScans/Images32"
+    dataroot = "C:/Users/Fabian/Documents/AI_Development/DataSets/MegaScans/Images128"
     workers = 2
-    batch_size = 8
-    image_size = 32
+    batch_size = 1
+    image_size = 128
     dataset = dset.ImageFolder(root=dataroot,
                             transform=transforms.Compose([
                                 #transforms.Resize(image_size),
@@ -127,7 +127,7 @@ def launch():
     args.batch_size = batch_size
     args.image_size = image_size
     args.dataloader = dataloader
-    args.start = 52
+    args.start = 0
     args.device = "cuda"
     args.lr = 3e-4
     train(args)

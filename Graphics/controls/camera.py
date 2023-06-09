@@ -33,7 +33,7 @@ class Camera:
         self.transform = getRotation4(self.rotation)
 
 
-    def getWorldView(self, rotation = glm.vec3(0, 0, -4)):
+    def getWorldView(self, rotation = glm.vec3(-1, 0, 0)):
         match self.viewType:
             case self.ORTHO_VIEW:
                 size = 1.1 - self.translation.z / 2
@@ -42,8 +42,8 @@ class Camera:
                     glm.rotate(glm.mat4(1.0), glm.radians(0.0), rotation))
             case self.PERSPECTIVE_VIEW:
                 return (glm.perspective(glm.radians(45.0), self.aspectRatio, 0.1, 5000.0), 
-                    glm.lookAt(glm.vec3(0, 0, -5 + self.translation.z) , glm.vec3(0, 0, 0), glm.vec3(0, 1, 0)),
-                    glm.rotate(glm.mat4(1.0), glm.radians(0.0), rotation))
+                    glm.lookAt(glm.vec3(0, 0, -2.9 + self.translation.z) , glm.vec3(0, 0, 0), glm.vec3(0, 1, 0)),
+                    glm.rotate(glm.rotate(glm.mat4(1.0), glm.radians(10.0), glm.vec3(0,1,0)), glm.radians(20.0), rotation))
 
 
     

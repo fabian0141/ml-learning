@@ -38,15 +38,15 @@ if __name__ == '__main__':
     random.seed(manualSeed)
     torch.manual_seed(manualSeed)
 
-    dataroot = "C:/Users/Fabian/Documents/AI_Development/DataSets/MegaScans/Images"
+    dataroot = "C:/Users/Fabian/Documents/AI_Development/DataSets/MegaScans/Images128"
     workers = 2
-    batch_size = 16
+    batch_size = 128
     image_size = 128
     nc = 1
-    nz = 100
-    ngf = 64
+    nz = 1000
+    ngf = 128
     ndf = 32
-    num_epochs = 10
+    num_epochs = 10000
     lr = 0.0002
     beta1 = 0.5
     ngpu = 1
@@ -67,7 +67,7 @@ if __name__ == '__main__':
                             ]))
     # Create the dataloader
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,
-                                            shuffle=True, num_workers=workers)
+                                            shuffle=True, num_workers=workers, pin_memory=True, persistent_workers=True)
 
     # Decide which device we want to run on
     device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
@@ -109,6 +109,20 @@ if __name__ == '__main__':
                 nn.ConvTranspose2d( ngf * 16, ngf * 8, 4, 2, 1, bias=False),
                 nn.BatchNorm2d(ngf * 8),
                 nn.ReLU(True),
+
+                # input is Z, going into a convolution
+                #nn.ConvTranspose2d( nz, ngf * 32, 4, 1, 0, bias=False),
+                #nn.BatchNorm2d(ngf * 32),
+                #nn.ReLU(True),
+                # state size. (ngf*2) x 16 x 16
+                #nn.ConvTranspose2d( ngf * 32, ngf * 16, 4, 2, 1, bias=False),
+                #nn.BatchNorm2d(ngf * 16),
+                #nn.ReLU(True),
+                # state size. (ngf*2) x 16 x 16
+                #nn.ConvTranspose2d( ngf * 16, ngf * 8, 4, 2, 1, bias=False),
+                #nn.BatchNorm2d(ngf * 8),
+                #nn.ReLU(True),
+
 
                 # state size. (ngf*8) x 4 x 4
                 nn.ConvTranspose2d(ngf * 8, ngf * 4, kernelSize, 2, 1, bias=False),
@@ -169,6 +183,20 @@ if __name__ == '__main__':
                 nn.Conv2d(ndf * 4, ndf * 8, kernelSize, 2, 1, bias=False),
                 nn.BatchNorm2d(ndf * 8),
                 nn.LeakyReLU(0.2, inplace=True),
+
+
+                # state size. (ndf*4) x 8 x 8
+                #nn.Conv2d(ndf * 8, ndf * 16, 4, 2, 1, bias=False),
+                #nn.BatchNorm2d(ndf * 16),
+                #nn.LeakyReLU(0.2, inplace=True),
+                # state size. (ndf*4) x 8 x 8
+                #nn.Conv2d(ndf * 16, ndf * 32, 4, 2, 1, bias=False),
+                #nn.BatchNorm2d(ndf * 32),
+                #nn.LeakyReLU(0.2, inplace=True),
+                # state size. (ndf*8) x 4 x 4
+                #nn.Conv2d(ndf * 32, 1, 4, 1, 0, bias=False),
+                #nn.Sigmoid()
+
 
                 # state size. (ndf*4) x 8 x 8
                 nn.Conv2d(ndf * 8, ndf * 16, 4, 2, 1, bias=False),
@@ -313,11 +341,16 @@ if __name__ == '__main__':
             iters += 1
 
         #show between each epoch    
-        generated_noise = torch.randn(64, nz, 1, 1, device=device)
-        generated = netG(generated_noise).detach().cpu()
-        grid = vutils.make_grid(generated, padding=0, normalize=True)
-        toImage = transforms.ToPILImage()
-        toImage(grid).save("C:\\Users\\Fabian\\Documents\\AI_Development\\\GeneratedImages\\generated_{}.png".format(j))
+        if j % 10 == 0:
+            generated_noise = torch.randn(64, nz, 1, 1, device=device)
+            generated = netG(generated_noise).detach().cpu()
+            grid = vutils.make_grid(generated, padding=0, normalize=True)
+            toImage = transforms.ToPILImage()
+            toImage(grid).save("C:\\Users\\Fabian\\Documents\\AI_Development\\\GeneratedImages\\generated_{}.png".format(j))
+
+            rand = random.randint(1, 1000)
+            torch.save(netG.state_dict(), f"C:\\Users\\Fabian\\Documents\\AI_Development\\SavedModels\\Generator_{manualSeed}_{rand}.pth")
+            torch.save(netD.state_dict(), f"C:\\Users\\Fabian\\Documents\\AI_Development\\SavedModels\\Discriminator_{manualSeed}_{rand}.pth")
         j += 1
 
 

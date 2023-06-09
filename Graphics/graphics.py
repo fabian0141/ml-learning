@@ -5,19 +5,27 @@ from Graphics.models.cube import TestCube
 from Graphics.models.objloader import ObjLoader
 from Graphics.controls.game import Game
 from Graphics.controls.camera import Camera
+from Cuda.voxelizer import CuVoxelizer
+from Cuda.voxelizertest import TestVoxelizer
+from Cuda.voxelizertest2 import TestVoxelizer2
+
 
 def run ():
     # Initialize Pygame and OpenGL
     game = Game()
     camera = Camera(Camera.PERSPECTIVE_VIEW)
-    vox = Voxelize(10)
-    tcube = TestCube()
+    #vox = CuVoxelizer(128)
+    #vox = TestVoxelizer(16)
+    vox = Voxelize(64) # 16 64 256 1024
+
+    #tcube = TestCube()
     #tcube.rotateCube()
-    #obj = ObjLoader("..\\DataSets\\MegaScans\\OBJ\\fern82.obj")
+    obj = ObjLoader("..\\DataSets\\MegaScans\\OBJ\\flower26.obj")
+
 
     start = time.time()
-    vox.voxelize(tcube.vertices, tcube.surfaces)
-    #vox.voxelize(obj.vertices, None)
+    #vox.voxelize(tcube.vertices, tcube.surfaces)
+    vox.voxelize(obj.vertices, [])
     end = time.time()
     print(f'Voxel time {time.time() - start}')
 
@@ -32,7 +40,7 @@ def run ():
         (projection, view, model) = camera.getWorldView()
 
         #obj.renderObj(camera.transform, projection, view, model)
-        tcube.renderCube(camera.transform, projection, view, model)
+        #tcube.renderCube(camera.transform, projection, view, model)
         vox.renderVoxels(camera.transform, projection, view, model)
         
         game.loopEnd(60)

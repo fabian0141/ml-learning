@@ -53,6 +53,6 @@ if __name__ == '__main__':
     model = UNet(c_in=1, c_out=1).to(device)
     ckpt = torch.load(os.path.join("models", "DDPM_Uncondtional", f"ckpt.pt"))
     model.load_state_dict(ckpt)
-    diffusion = Diffusion(img_size=32, device=device)
+    diffusion = Diffusion(img_size=64, device=device)
     x = diffusion.sample(model, n=40)
     save_images(x, os.path.join("results", "DDPM_Uncondtional", f"Samples.jpg"))
