@@ -15,7 +15,7 @@ import torchvision.utils as vutils
 import numpy as np
 import matplotlib.pyplot as plt
 from modelsize import SizeEstimator
-from pytorch_memlab import MemReporter
+#from pytorch_memlab import MemReporter
 
 #from IPython.display import HTML
 
@@ -204,7 +204,7 @@ if __name__ == '__main__':
     #se = SizeEstimator(netD, next(iter(dataloader))[0].to(device), input_size=(256,3,64,64))
     #print("Discriminator Size: ", se.estimate_size())
 
-    reporter = MemReporter()
+    #reporter = MemReporter()
     #reporter.report()
     # Establish convention for real and fake labels during training
     real_label = 1.

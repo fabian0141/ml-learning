@@ -1,9 +1,10 @@
 from Test.cave import testcave
 from Graphics import graphics, visualizevoxels
 from Cuda import voxelizer, testviews
+from generator3d import gan3d
 
 if __name__ == '__main__':
-    runProgram = 1
+    runProgram = 5
 
     match runProgram:
         case 0:
@@ -17,4 +18,5 @@ if __name__ == '__main__':
             visualizevoxels.run("..\\DataSets\\MegaScans\\Voxel64", 7115) #6436
         case 4:
             testviews.run()
-
+        case 5:
+            gan3d.run()
